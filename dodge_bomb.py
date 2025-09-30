@@ -27,7 +27,6 @@ def check_bound(rct : pg.Rect) -> tuple[bool, bool]:
         tate = False 
     return yoko , tate
     
-    
 def gameover(screen):
     cover = pg.Surface((WIDTH, HEIGHT))
     cover.fill((0, 0, 0))
@@ -70,6 +69,19 @@ def get_kk_imgs():
         (-5,+5): pg.transform.rotozoom(base, -135, 1),  
     }
     return kk_dict
+
+
+def calc_orientation(org: pg.Rect, dst: pg.Rect, current_xy: tuple[float, float]) -> tuple[float, float]:
+    dx = dst.centerx - org.centerx
+    dy = dst.centery - org.centery
+    norm = (dx*dx + dy*dy) ** 0.5
+    if norm == 0:
+        return current_xy
+    if norm < 300:
+        return current_xy
+    dx = dx / norm * 5
+    dy = dy / norm * 5
+    return dx, dy
 
 
 def main():
@@ -118,6 +130,7 @@ def main():
         idx = min(tmr // 500, 9)                
         bb_img = bb_imgs[idx]
         bb_rct = bb_img.get_rect(center=bb_rct.center)
+        vx, vy = calc_orientation(bb_rct, kk_rct, (vx, vy))
         avx = vx * bb_accs[idx]
         avy = vy * bb_accs[idx]
         bb_rct.move_ip(avx, avy)
