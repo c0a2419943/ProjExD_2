@@ -27,7 +27,7 @@ def check_bound(rct : pg.Rect) -> tuple[bool, bool]:
         tate = False 
     return yoko , tate
     
-def gameover(screen):
+def gameover(screen: pg.Surface) -> None:
     cover = pg.Surface((WIDTH, HEIGHT))
     cover.fill((0, 0, 0))
     cover.set_alpha(180)
