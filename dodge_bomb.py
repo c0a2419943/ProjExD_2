@@ -69,10 +69,7 @@ def main():
                 return
         screen.blit(bg_img, [0, 0]) 
         if kk_rct.colliderect(bb_rct):
-<<<<<<< HEAD
-=======
             gameover(screen)
->>>>>>> e0de78c (演習問題:ゲームオーバー画面)
             return 
 
 
