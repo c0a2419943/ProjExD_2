@@ -56,6 +56,21 @@ def init_bb_imgs():
     bb_accs = [a for a in range(1, 11)] 
     return bb_imgs, bb_accs
 
+def get_kk_imgs():
+    base = pg.transform.rotozoom(pg.image.load("fig/3.png"), 0, 0.9)
+    kk_dict = {
+        (0, 0):  base,                               
+        (+5, 0): pg.transform.rotozoom(base,   0, 1),
+        (-5, 0): pg.transform.rotozoom(base, 180, 1),
+        (0, -5): pg.transform.rotozoom(base,  90, 1),   
+        (0, +5): pg.transform.rotozoom(base, -90, 1),   
+        (+5,-5): pg.transform.rotozoom(base,  45, 1),   
+        (+5,+5): pg.transform.rotozoom(base, -45, 1),   
+        (-5,-5): pg.transform.rotozoom(base, 135, 1),   
+        (-5,+5): pg.transform.rotozoom(base, -135, 1),  
+    }
+    return kk_dict
+
 
 def main():
     pg.display.set_caption("逃げろ！こうかとん")
@@ -64,6 +79,8 @@ def main():
     kk_img = pg.transform.rotozoom(pg.image.load("fig/3.png"), 0, 0.9)
     kk_rct = kk_img.get_rect()
     kk_rct.center = 300, 200
+    kk_imgs = get_kk_imgs()
+    kk_img = kk_imgs[(0, 0)]
     bb_img = pg.Surface((20,20)) 
     pg.draw.circle(bb_img, (255, 0 , 0),(10, 10), 10)
     bb_img.set_colorkey((0, 0, 0))
@@ -74,7 +91,6 @@ def main():
     idx = 0
     bb_img = bb_imgs[idx]
     bb_rct = bb_img.get_rect(center=bb_rct.center)
-
     vx, vy = +5, +5
     clock = pg.time.Clock()
     tmr = 0
@@ -97,6 +113,7 @@ def main():
         kk_rct.move_ip(sum_mv)
         if check_bound(kk_rct) != (True, True):
             kk_rct.move_ip(-sum_mv[0], -sum_mv[1])
+        kk_img = kk_imgs.get((sum_mv[0], sum_mv[1]), kk_imgs[(0, 0)])
         screen.blit(kk_img, kk_rct)
         idx = min(tmr // 500, 9)                
         bb_img = bb_imgs[idx]
@@ -104,14 +121,12 @@ def main():
         avx = vx * bb_accs[idx]
         avy = vy * bb_accs[idx]
         bb_rct.move_ip(avx, avy)
-
         yoko, tate = check_bound(bb_rct)
         if not yoko:
             vx *= -1
         if not tate:
             vy *= -1
         screen.blit(bb_img, bb_rct)
-
         pg.display.update()
         tmr += 1
         clock.tick(50)
@@ -122,3 +137,4 @@ if __name__ == "__main__":
     main()
     pg.quit()
     sys.exit()
+
